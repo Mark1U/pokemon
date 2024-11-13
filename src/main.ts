@@ -1,24 +1,30 @@
-import './style.css'
-import typescriptLogo from './typescript.svg'
-import viteLogo from '/vite.svg'
-import { setupCounter } from './counter.ts'
+import { IApiResult } from "./interfaces/IApiResult";
+import { IPokemon } from "./interfaces/IPokemon";
+import { IPokemonInfo } from "./interfaces/IPokenmonInfo";
+import { IResult } from "./interfaces/IResult";
 
-document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
-  <div>
-    <a href="https://vite.dev" target="_blank">
-      <img src="${viteLogo}" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://www.typescriptlang.org/" target="_blank">
-      <img src="${typescriptLogo}" class="logo vanilla" alt="TypeScript logo" />
-    </a>
-    <h1>Vite + TypeScript</h1>
-    <div class="card">
-      <button id="counter" type="button"></button>
-    </div>
-    <p class="read-the-docs">
-      Click on the Vite and TypeScript logos to learn more
-    </p>
-  </div>
-`
+const BASE_URL: string = "https://pokeapi.co/api/v2";
+const allPokemonArr: IPokemonInfo[] = [];
 
-setupCounter(document.querySelector<HTMLButtonElement>('#counter')!)
+function fetchPokemon(limit: number, offset: number) {
+    fetch(`${BASE_URL}/pokemon?limit=${limit}&offset=${offset}`)
+        .then((response) => response.json())
+        .then((apiResult: IApiResult) => {
+            apiResult.results.forEach((pokemon: IResult) => {
+                fetchPokemonDetails(pokemon.url);
+            });
+        })
+        .finally(() => {
+            console.log(allPokemonArr);
+        });
+}
+
+function fetchPokemonDetails(url: string) {
+    fetch(url)
+        .then((response) => response.json())
+        .then((pokemon: IPokemon) => {
+            allPokemonArr.push({ id: pokemon.id, name: pokemon.name, imgUrl: pokemon.sprites.front_default, types: pokemon.types.map((type) => type.type.name) });
+        });
+}
+
+fetchPokemon(20, 0);
