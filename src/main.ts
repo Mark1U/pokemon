@@ -50,9 +50,12 @@ async function fetchTypes() {
     const types: IApiResult = await response.json();
     console.log(types);
 
-    types.results.slice(0, 18).forEach((type, index) => {
+    const typeResult = types.results.slice(0, 18).sort()
+
+    types.results.slice(0, 18).sort().forEach((type, index) => {
         const button = document.createElement("button");
         button.textContent = type.name;
+        button.className = "button-type";
         button.style.backgroundColor = typeBtnColors[index];
         button.addEventListener("click", () => {
             const modifiedArr = allPokemonArr.filter((pokemon) => pokemon.types.includes(type.name));
