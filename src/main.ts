@@ -11,17 +11,17 @@ const allPokemonArr: IPokemonInfo[] = [];
 async function fetchPokemon(limit: number, offset: number) {
     const response = await fetch(`${BASE_URL}/pokemon?limit=${limit}&offset=${offset}`);
     const apiresult: IApiResult = await response.json();
-    await apiresult.results.forEach((pokemon: IResult) => {
-        fetchPokemonDetails(pokemon.url);
-    });
-    console.log(allPokemonArr);
+    const fetchPromises = apiresult.results.map((pokemon: IResult) => fetchPokemonDetails(pokemon.url));
+    await Promise.all(fetchPromises);
+    console.log(fetchPromises);
 
+    console.log(allPokemonArr);
     displayPokemon(allPokemonArr);
 }
 
-function fetchPokemonDetails(url: string) {
-    const response = fetch(url);
-    const pokemon: IPokemon = response.json();
+async function fetchPokemonDetails(url: string) {
+    const response = await fetch(url);
+    const pokemon: IPokemon = await response.json();
     allPokemonArr.push({ id: pokemon.id, name: pokemon.name, imgUrl: pokemon.sprites.front_default, types: pokemon.types.map((type) => type.type.name) });
 }
 
