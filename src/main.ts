@@ -63,7 +63,7 @@ function displayPokemon(pokemonArr: IPokemonInfo[]) {
             </div>
             <div class="info-container">
                 <p>#${pokemon.id.toString().padStart(3, "0")}</p>
-                <p>${pokemon.name}</p>
+                <p class='pokemonName'>${pokemon.name}</p>
             </div>`;
 
         article.addEventListener('click', () => {
@@ -76,7 +76,7 @@ function displayPokemon(pokemonArr: IPokemonInfo[]) {
 </div>
 <div class="info-container">
     <p>#${pokemon.id.toString().padStart(3, "0")}</p>
-    <p>${pokemon.name}</p>
+    <p class='pokemonName'>${pokemon.name}</p>
 </div>`
 
             modal!.style.display = "block";
@@ -136,6 +136,11 @@ typeImg?.addEventListener('click', () => {
 logo?.addEventListener('click', () => {
     const rndArr = allPokemonArr.slice(0, 200);
     displayPokemon(rndArr)
+})
+
+const scrollTop = document.querySelector('#scrollTop')
+scrollTop?.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 })
 
 fetchTypes();
