@@ -13,24 +13,41 @@ const allPokemonArr: IPokemonInfo[] = [];
 let typeArr: string[] = [];
 
 async function fetchPokemon(limit: number, offset: number) {
+    storeCounter = 0;
+    fetchCounter = 0;
     const response = await fetch(`${BASE_URL}/pokemon?limit=${limit}&offset=${offset}`);
     const apiresult: IApiResult = await response.json();
     const fetchPromises = apiresult.results.map((pokemon: IResult) => fetchPokemonDetails(pokemon.url));
     await Promise.all(fetchPromises);
+    console.log({ storeCounter, fetchCounter })
     console.log(fetchPromises);
     console.log(allPokemonArr);
     displayPokemon(allPokemonArr);
 }
 
+let storeCounter = 0
+let fetchCounter = 0
+
+
 async function fetchPokemonDetails(url: string) {
-    const response = await fetch(url);
-    const pokemon: IPokemon = await response.json();
-    allPokemonArr.push({ id: pokemon.id, name: pokemon.name, imgUrl: pokemon.sprites.other["official-artwork"].front_default, types: pokemon.types.map((type) => type.type.name) });
+
+    const pokemonStore = localStorage.getItem(url)
+    if (pokemonStore) {
+        allPokemonArr.push(JSON.parse(pokemonStore))
+        storeCounter++
+    } else {
+        fetchCounter++
+        const response = await fetch(url);
+        const pokemon: IPokemon = await response.json();
+        const data = { id: pokemon.id, name: pokemon.name, imgUrl: pokemon.sprites.other["official-artwork"].front_default, types: pokemon.types.map((type) => type.type.name) }
+        allPokemonArr.push(data);
+        localStorage.setItem(url, JSON.stringify(data))
+    }
 }
 
 function displayPokemon(pokemonArr: IPokemonInfo[]) {
     output.innerHTML = "";
-    pokemonArr.forEach((pokemon) => {
+    pokemonArr.slice(0, 96).forEach((pokemon) => {
         console.log("innerhalb der funktion");
         output.innerHTML += `
         <article>
@@ -75,4 +92,4 @@ searchInput.addEventListener("input", () => {
 });
 
 fetchTypes();
-fetchPokemon(151, 0);
+fetchPokemon(1509, 0);
