@@ -11,6 +11,8 @@ const modal = document.getElementById("pokemonModal");
 const pokemonData = document.getElementById("pokemonData");
 const span = document.getElementsByClassName("close")[0];
 const searchCount = document.getElementById('searchCount')
+const logo = document.getElementById('logo')
+const typeImg = document.getElementById('typeImg')
 
 const BASE_URL: string = "https://pokeapi.co/api/v2";
 const allPokemonArr: IPokemonInfo[] = [];
@@ -125,6 +127,16 @@ window.addEventListener('click', (event) => {
     }
 })
 
+
+typeImg?.addEventListener('click', () => {
+    const shuffled = [...allPokemonArr].sort(() => 0.5 - Math.random());
+    displayPokemon(shuffled.slice(0, 48))
+})
+
+logo?.addEventListener('click', () => {
+    const rndArr = allPokemonArr.slice(0, 200);
+    displayPokemon(rndArr)
+})
 
 fetchTypes();
 fetchPokemon(1509, 0);
