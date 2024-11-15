@@ -105,7 +105,9 @@ async function fetchTypes() {
 }
 
 searchInput.addEventListener("input", () => {
-    const modifiedArr = allPokemonArr.filter((pokemon) => pokemon.name.toLowerCase().includes(searchInput.value.trim().toLowerCase()));
+    const modifiedArr = allPokemonArr.filter((pokemon) =>
+        pokemon.name.toLowerCase().includes(searchInput.value.trim().toLowerCase()) || pokemon.id.toString().includes(searchInput.value.trim().replace('#', ''))
+    );
     displayPokemon(modifiedArr);
 });
 
